@@ -6,12 +6,17 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 
 const Navbar: React.FC = async () => {
   const { userId } = await auth();
-
-  const user = await currentUser();
-  console.log(
-    "////////////////////////////////////////////////////////////////////////////////////////////////////user = ",
-    user
-  );
+  if (userId) {
+    const user = await currentUser();
+    console.log(
+      "////////////////////////////////////////////////////////////////////////////////////////////////////user = ",
+      user
+    );
+    console.log(
+      "////////////////////////////////////////////////////////////////////////////////////////////////////userId = ",
+      userId
+    );
+  }
 
   return (
     <nav className={styles.navbar}>
