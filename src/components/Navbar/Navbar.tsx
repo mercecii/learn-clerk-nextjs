@@ -3,7 +3,6 @@ import Link from "next/link";
 import styles from "./navbar.module.css";
 import { UserButton } from "@clerk/nextjs";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 const Navbar: React.FC = async () => {
   const { userId } = await auth();
