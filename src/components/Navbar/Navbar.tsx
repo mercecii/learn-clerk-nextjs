@@ -2,8 +2,18 @@ import React from "react";
 import Link from "next/link";
 import styles from "./navbar.module.css";
 import { UserButton } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = async () => {
+  const { userId } = await auth();
+
+  const user = await currentUser();
+  console.log(
+    "////////////////////////////////////////////////////////////////////////////////////////////////////user = ",
+    user
+  );
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
@@ -13,15 +23,21 @@ const Navbar: React.FC = () => {
         <li>
           <Link href="/">Home</Link>
         </li>
-        <li>
-          <Link href="/about">About</Link>
-        </li>
-        <li>
-          <Link href="/contact">Contact</Link>
-        </li>
-        <li>
-          <UserButton userProfileUrl="/profile" afterSignOutUrl="/" />
-        </li>
+        {!userId && (
+          <li>
+            <Link href="/sign-in">Login</Link>
+          </li>
+        )}
+        {!userId && (
+          <li>
+            <Link href="/sign-up">Sign up</Link>
+          </li>
+        )}
+        {userId && (
+          <li>
+            <UserButton userProfileUrl="/profile" afterSignOutUrl="/" />
+          </li>
+        )}
       </ul>
     </nav>
   );

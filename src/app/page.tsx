@@ -1,9 +1,17 @@
-import Navbar from "@/components/Navbar/Navbar";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import Dashobard from "./dashboard/page";
 
-export default function Home() {
+export default async function Home() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
   return (
     <>
-      <Navbar />
+      <h1>Home Page</h1>
+      <Dashobard />
     </>
   );
 }
