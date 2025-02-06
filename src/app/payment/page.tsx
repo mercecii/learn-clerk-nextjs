@@ -15,7 +15,10 @@ const PaymentForm = () => {
     muid: "",
   });
 
-  const onSubmit = async (e: any): Promise<void> => {
+  const onSubmit = async (e: {
+    preventDefault: () => void;
+    target: { name: any; value: any };
+  }): Promise<void> => {
     e.preventDefault();
 
     const { name, value } = e.target;
