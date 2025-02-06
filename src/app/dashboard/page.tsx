@@ -9,7 +9,11 @@ const Dashobard = async () => {
 
   return (
     <div>
-      Hello {user?.firstName} {user?.lastName} !!!{" "}
+      {user && (
+        <>
+          Hello {user?.firstName} {user?.lastName} !!!{" "}
+        </>
+      )}
     </div>
   );
 };

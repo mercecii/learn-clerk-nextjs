@@ -42,6 +42,16 @@ const Navbar: React.FC = async () => {
             <UserButton userProfileUrl="/profile" afterSignOutUrl="/" />
           </li>
         )}
+        {userId && (
+          <li>
+            <Link href="/dashboard">Dashboard</Link>
+          </li>
+        )}
+        {userId && (
+          <li>
+            <Link href="/payment">Payment</Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
