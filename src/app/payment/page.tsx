@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { FormEvent } from "react";
 
 type FormData = {
   name?: string;
@@ -8,24 +8,15 @@ type FormData = {
   muid?: string;
 };
 const PaymentForm = () => {
-  const [data, setData] = React.useState<FormData>({
+  const [formData, setFormData] = React.useState<FormData>({
     name: "",
     mobile: "",
     amount: "",
     muid: "",
   });
 
-  const onSubmit = async (e: {
-    preventDefault: () => void;
-    target: { name: string; value: string };
-  }): Promise<void> => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-
-    const { name, value } = e.target;
-    const dd = { ...data, [name]: value };
-    setData(dd);
-    console.log("data = ", data);
-
     makePayment();
   };
 
@@ -62,7 +53,7 @@ const PaymentForm = () => {
           <input
             onChange={(e) => {
               console.log("e = ", e);
-              setData((data) => ({ ...data, name: e.target.value }));
+              setFormData((data) => ({ ...data, name: e.target.value }));
             }}
             type="text"
             id="name"
@@ -82,7 +73,7 @@ const PaymentForm = () => {
             id="mobile"
             onChange={(e) => {
               console.log("e = ", e);
-              setData((data) => ({ ...data, mobile: e.target.value }));
+              setFormData((data) => ({ ...data, mobile: e.target.value }));
             }}
             name="mobile"
             style={styles.input}
@@ -99,7 +90,7 @@ const PaymentForm = () => {
             type="text"
             onChange={(e) => {
               console.log("e = ", e);
-              setData((data) => ({ ...data, amount: e.target.value }));
+              setFormData((data) => ({ ...data, amount: e.target.value }));
             }}
             id="amount"
             name="amount"
@@ -117,7 +108,7 @@ const PaymentForm = () => {
             type="text"
             onChange={(e) => {
               console.log("e = ", e);
-              setData((data) => ({ ...data, muid: e.target.value }));
+              setFormData((data) => ({ ...data, muid: e.target.value }));
             }}
             id="muid"
             name="muid"
