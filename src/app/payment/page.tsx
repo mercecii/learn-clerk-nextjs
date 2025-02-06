@@ -17,6 +17,7 @@ const PaymentForm = () => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    console.log("formData = ", formData);
     makePayment();
   };
 
