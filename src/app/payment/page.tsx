@@ -1,5 +1,7 @@
 "use client";
 import React, { FormEvent } from "react";
+import sha256 from "crypto-js/sha256";
+import { v4 as uuidv4 } from "uuid";
 
 type FormData = {
   name?: string;
@@ -21,19 +23,46 @@ const PaymentForm = () => {
     makePayment();
   };
 
+  const MERCHANT_ID = "PGTESTPAYUAT86";
+  const MERCHANT_USER_ID = "MUID123";
+  const SALT_KEY = "96434309-7796-489d-8924-ab56988a6076";
+  const SALT_INDEX = 1;
+
   const makePayment = async () => {
+    const merchantTransactionId = "Tr-" + uuidv4().toString().slice(0, 32);
+
+    const payloadMock = {
+      merchantId: MERCHANT_ID,
+      merchantTransactionId: merchantTransactionId,
+      merchantUserId: MERCHANT_USER_ID,
+      amount: 10000,
+      redirectUrl: `http://localhost:3000/api/status/${merchantTransactionId}`,
+      redirectMode: "REDIRECT",
+      callbackUrl: `http://localhost:3000/api/status/${merchantTransactionId}`,
+      mobileNumber: "9999999999",
+      paymentInstrument: {
+        type: "PAY_PAGE",
+      },
+    };
+
+    const strigifiedPayload = JSON.stringify(payloadMock);
+    const payloadBase64 = Buffer.from(strigifiedPayload).toString("base64");
+    console.log("payloadBase64 = ", payloadBase64);
+
+    const payloadSha256 = sha256(payloadBase64 + "/pg/v1/pay" + SALT_KEY);
+    const checksum = payloadSha256 + "###" + SALT_INDEX;
+    console.log("checksum = ", checksum);
+
     const response = await fetch(
       "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-VERIFY":
-            "d7a8e4458caa6fcd781166bbdc85fec76740c18cb9baa9a4c48cf2387d554180###1",
+          "X-VERIFY": checksum,
         },
         body: JSON.stringify({
-          request:
-            "ewogICJtZXJjaGFudElkIjogIlBHVEVTVFBBWVVBVCIsCiAgIm1lcmNoYW50VHJhbnNhY3Rpb25JZCI6ICJNVDc4NTA1OTAwNjgxODgxMDQiLAogICJtZXJjaGFudFVzZXJJZCI6ICJNVUlEMTIzIiwKICAiYW1vdW50IjogMTAwMDAsCiAgInJlZGlyZWN0VXJsIjogImh0dHBzOi8vd2ViaG9vay5zaXRlL3JlZGlyZWN0LXVybCIsCiAgInJlZGlyZWN0TW9kZSI6ICJSRURJUkVDVCIsCiAgImNhbGxiYWNrVXJsIjogImh0dHBzOi8vd2ViaG9vay5zaXRlL2NhbGxiYWNrLXVybCIsCiAgIm1vYmlsZU51bWJlciI6ICI5OTk5OTk5OTk5IiwKICAicGF5bWVudEluc3RydW1lbnQiOiB7CiAgICAidHlwZSI6ICJQQVlfUEFHRSIKICB9Cn0=",
+          request: payloadBase64,
         }),
       }
     );
