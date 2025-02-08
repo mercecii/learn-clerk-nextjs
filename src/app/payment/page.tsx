@@ -2,7 +2,8 @@
 import React, { FormEvent } from "react";
 import sha256 from "crypto-js/sha256";
 import { v4 as uuidv4 } from "uuid";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { getBaseUrl } from "@/utils/utils";
 
 export interface Root {
   success: boolean;
@@ -34,6 +35,7 @@ type FormData = {
   muid?: string;
 };
 const PaymentForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = React.useState<FormData>({
     name: "",
     mobile: "",
@@ -41,28 +43,33 @@ const PaymentForm = () => {
     muid: "",
   });
 
+  const getcallbackUrl = (merchantTransactionId: string) =>
+    `${getBaseUrl()}/api/status/${merchantTransactionId}`;
+  const getRedirectUrl = (merchantTransactionId: string) =>
+    `${getBaseUrl()}/api/status/${merchantTransactionId}`;
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     console.log("formData = ", formData);
     makePayment();
   };
 
-  const MERCHANT_ID = "PGTESTPAYUAT86";
-  const MERCHANT_USER_ID = "MUID123";
-  const SALT_KEY = "96434309-7796-489d-8924-ab56988a6076";
-  const SALT_INDEX = 1;
-
   const makePayment = async () => {
     const merchantTransactionId = "Tr-" + uuidv4().toString().slice(0, 32);
 
+    const MERCHANT_ID = process.env.NEXT_PUBLIC_MERCHANT_ID;
+    const MERCHANT_USER_ID = process.env.NEXT_PUBLIC_MERCHANT_USER_ID;
+    const SALT_KEY = process.env.NEXT_PUBLIC_SALT_KEY;
+    const SALT_INDEX = process.env.NEXT_PUBLIC_SALT_INDEX;
+    console.log({ MERCHANT_ID, MERCHANT_USER_ID, SALT_KEY, SALT_INDEX });
     const payloadMock = {
       merchantId: MERCHANT_ID,
       merchantTransactionId: merchantTransactionId,
       merchantUserId: MERCHANT_USER_ID,
       amount: 10000,
-      redirectUrl: `http://localhost:3000/api/status/${merchantTransactionId}`,
+      redirectUrl: getRedirectUrl(merchantTransactionId),
       redirectMode: "REDIRECT",
-      callbackUrl: `http://localhost:3000/api/status/${merchantTransactionId}`,
+      callbackUrl: getcallbackUrl(merchantTransactionId),
       mobileNumber: "9999999999",
       paymentInstrument: {
         type: "PAY_PAGE",
@@ -93,7 +100,7 @@ const PaymentForm = () => {
     const result: Root = await response.json();
     const redirectUrl = result.data.instrumentResponse.redirectInfo.url;
     console.log("result = ", result);
-    redirect(redirectUrl);
+    router.push(redirectUrl);
   };
 
   return (
