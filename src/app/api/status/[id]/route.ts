@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import sha256 from "crypto-js/sha256";
+import { getBaseUrl } from "@/utils/utils";
 
 export async function GET(request: NextRequest) {
   console.log(
@@ -37,13 +38,11 @@ export async function GET(request: NextRequest) {
   );
   const data = await response.json();
   console.log("data = ", data);
-  const url = request.nextUrl.clone();
+  const url = getBaseUrl();
   console.log("url = ", url);
   if (data.success && data.code === "PAYMENT_SUCCESS") {
-    url.pathname = "/payment/success";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url + "/payment/success");
   } else {
-    url.pathname = "/payment/failure";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url + "/payment/failure");
   }
 }

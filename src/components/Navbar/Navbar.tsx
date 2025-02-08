@@ -8,14 +8,7 @@ const Navbar: React.FC = async () => {
   const { userId } = await auth();
   if (userId) {
     const user = await currentUser();
-    console.log(
-      "////////////////////////////////////////////////////////////////////////////////////////////////////user = ",
-      user
-    );
-    console.log(
-      "////////////////////////////////////////////////////////////////////////////////////////////////////userId = ",
-      userId
-    );
+    console.log("user firstName = ", user?.firstName);
   }
 
   return (

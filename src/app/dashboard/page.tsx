@@ -2,10 +2,6 @@ import { currentUser } from "@clerk/nextjs/server";
 
 const Dashobard = async () => {
   const user = await currentUser();
-  console.log(
-    "////////////////////////////////////////////////////////////////////////////////////////////////////user = ",
-    user
-  );
 
   return (
     <div>
