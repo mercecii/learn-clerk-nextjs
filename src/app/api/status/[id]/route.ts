@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import sha256 from "crypto-js/sha256";
-import { getBaseUrl } from "@/utils/utils";
+import { getBaseUrlServerSide } from "@/utils/utils";
 
 export async function GET(request: NextRequest) {
   console.log(
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   );
   const data = await response.json();
   console.log("data = ", data);
-  const url = getBaseUrl();
+  const url = getBaseUrlServerSide();
   console.log("url = ", url);
   if (data.success && data.code === "PAYMENT_SUCCESS") {
     return NextResponse.redirect(url + "/payment/success");

@@ -3,7 +3,6 @@ import React, { FormEvent } from "react";
 import sha256 from "crypto-js/sha256";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
-import { getBaseUrl } from "@/utils/utils";
 
 export interface Root {
   success: boolean;
@@ -44,9 +43,9 @@ const PaymentForm = () => {
   });
 
   const getcallbackUrl = (merchantTransactionId: string) =>
-    `${getBaseUrl()}/api/status/${merchantTransactionId}`;
+    `${window.location.origin}/api/status/${merchantTransactionId}`;
   const getRedirectUrl = (merchantTransactionId: string) =>
-    `${getBaseUrl()}/api/status/${merchantTransactionId}`;
+    `${window.location.origin}/api/status/${merchantTransactionId}`;
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
