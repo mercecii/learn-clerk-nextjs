@@ -2,6 +2,30 @@
 import React, { FormEvent } from "react";
 import sha256 from "crypto-js/sha256";
 import { v4 as uuidv4 } from "uuid";
+import { redirect } from "next/navigation";
+
+export interface Root {
+  success: boolean;
+  code: string;
+  message: string;
+  data: Data;
+}
+
+export interface Data {
+  merchantId: string;
+  merchantTransactionId: string;
+  instrumentResponse: InstrumentResponse;
+}
+
+export interface InstrumentResponse {
+  type: string;
+  redirectInfo: RedirectInfo;
+}
+
+export interface RedirectInfo {
+  url: string;
+  method: string;
+}
 
 type FormData = {
   name?: string;
@@ -66,8 +90,10 @@ const PaymentForm = () => {
         }),
       }
     );
-    const result = await response.json();
+    const result: Root = await response.json();
+    const redirectUrl = result.data.instrumentResponse.redirectInfo.url;
     console.log("result = ", result);
+    redirect(redirectUrl);
   };
 
   return (
