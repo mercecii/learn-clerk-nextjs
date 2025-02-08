@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import sha256 from "crypto-js/sha256";
 
-export async function GET(request: NextRequest, res: NextResponse) {
+export async function GET(request: NextRequest) {
   console.log(
     "################################formData################################ = ",
     request.nextUrl.pathname
